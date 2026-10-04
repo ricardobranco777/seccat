@@ -63,6 +63,8 @@ Only one `arch:`, one `!arch:`, and one of each kernel condition may appear per 
 
 ### Symbolic values
 
+With `--numeric` none of these names are written: values are decimal, and masks are hex.
+
 Output uses names where one is known; input accepts names, decimal, `0x` hex,
 `|` combinations, and parentheses (which only group).
 

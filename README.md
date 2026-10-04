@@ -78,7 +78,7 @@ seccat runs on Linux only.
 ## Usage
 
 ```
-seccat [-c SET] [-a ARCH] [-k VERSION] [-A] [FILE|-]    # JSON -> text
+seccat [-c SET] [-a ARCH] [-k VERSION] [-A] [-n] [FILE|-]    # JSON -> text
 seccat -j [FILE|-]                                      # text -> JSON
 ```
 
@@ -94,6 +94,8 @@ come before or after the file name. Profiles to start with:
 - `-k`, `--kernel VERSION`: the kernel to evaluate for, such as `6.8` or `6.8.0-45-generic`.
 - `-A`, `--all`: also list the syscalls the profile leaves to its default
   action. Needs `--arch`.
+- `-n`, `--numeric`: write argument values as numbers, not names such as `AF_VSOCK`
+  or `CLONE_NEWUSER`, for tools that read the text and have no table of the names.
 - `-j`, `--json`: convert text back to JSON.
 - `--version`: print the version and exit.
 

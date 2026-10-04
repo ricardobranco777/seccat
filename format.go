@@ -13,7 +13,12 @@ import (
 )
 
 // WriteText writes the doc in the text format described in FORMAT.md.
-func (d *Doc) WriteText(w io.Writer) error {
+func (d *Doc) WriteText(w io.Writer) error { return d.writeText(w, false) }
+
+// WriteNumericText is WriteText with every argument value as a number.
+func (d *Doc) WriteNumericText(w io.Writer) error { return d.writeText(w, true) }
+
+func (d *Doc) writeText(w io.Writer, numeric bool) error {
 	var bw strings.Builder
 	fmt.Fprintf(&bw, "@default\t%s\n", d.Default)
 	for _, a := range d.Arch {
@@ -37,7 +42,7 @@ func (d *Doc) WriteText(w io.Writer) error {
 	}
 	lines := make([]string, len(d.Rules))
 	for i := range d.Rules {
-		lines[i] = d.Rules[i].String()
+		lines[i] = d.Rules[i].text(numeric)
 	}
 	slices.SortFunc(lines, naturalCompare)
 	for _, l := range lines {
@@ -49,9 +54,11 @@ func (d *Doc) WriteText(w io.Writer) error {
 }
 
 // String renders the rule as one text-format line (without newline).
-func (r *Rule) String() string {
+func (r *Rule) String() string { return r.text(false) }
+
+func (r *Rule) text(numeric bool) string {
 	fields := []string{r.Name, r.Action.String()}
-	if c := r.condString(); c != "" {
+	if c := r.condString(numeric); c != "" {
 		fields = append(fields, c)
 	}
 	if r.Comment != "" {
@@ -60,11 +67,11 @@ func (r *Rule) String() string {
 	return strings.Join(fields, "\t")
 }
 
-func (r *Rule) condString() string {
+func (r *Rule) condString(numeric bool) string {
 	c := &r.Conds
 	var parts []string
 	for _, a := range c.Args {
-		parts = append(parts, r.argString(a))
+		parts = append(parts, r.argString(a, numeric))
 	}
 	for _, s := range c.Caps {
 		parts = append(parts, "cap:"+s)
@@ -99,8 +106,11 @@ func (r *Rule) table(idx uint) *symTable {
 	return t
 }
 
-func (r *Rule) argString(a ArgCond) string {
-	t := r.table(a.Index)
+func (r *Rule) argString(a ArgCond, numeric bool) string {
+	var t *symTable
+	if !numeric {
+		t = r.table(a.Index)
+	}
 	switch a.Op {
 	case "&":
 		return fmt.Sprintf("arg%d&%s==%s", a.Index, maskString(t, a.Value), valueString(t, a.ValueTwo))

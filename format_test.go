@@ -5,7 +5,9 @@ package main
 import (
 	"bytes"
 	"flag"
+	"io"
 	"os"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -94,5 +96,36 @@ func TestFormatEdges(t *testing.T) {
 		"d\tERRNO(4000)\n"
 	if buf.String() != want {
 		t.Errorf("got:\n%s\nwant:\n%s", buf.String(), want)
+	}
+}
+
+func TestNumeric(t *testing.T) {
+	text, _, code := runText(t, "--numeric", "--arch", "amd64", "--caps", "none", "--kernel", "6.8", "testdata/docker.json")
+	if code != 0 {
+		t.Fatalf("exit %d", code)
+	}
+	for _, want := range []string{"clone\tALLOW\targ0&0x7e020000==0\n", "personality\tALLOW\targ0==8\n", "socket\tALLOW\targ0==10\n"} {
+		if !strings.Contains(text, want) {
+			t.Errorf("missing %q", want)
+		}
+	}
+	if regexp.MustCompile(`arg\d[^\t]*(AF_|CLONE_|PER_|NETLINK_)`).MatchString(text) {
+		t.Error("a symbolic value is left")
+	}
+	// The numbers mean the same: both give the same symbolic text again.
+	names, _, _ := runText(t, "--arch", "amd64", "--caps", "none", "--kernel", "6.8", "testdata/docker.json")
+	back := func(in string) string {
+		var j, out strings.Builder
+		if run([]string{"--json"}, strings.NewReader(in), &j, io.Discard) != 0 ||
+			run(nil, strings.NewReader(j.String()), &out, io.Discard) != 0 {
+			t.Fatal("round trip failed")
+		}
+		return out.String()
+	}
+	if back(text) != back(names) {
+		t.Error("numeric and symbolic text mean different things")
+	}
+	if _, _, code := runText(t, "--numeric", "--json"); code != 2 {
+		t.Errorf("--numeric --json: exit %d, want 2", code)
 	}
 }

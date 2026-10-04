@@ -24,6 +24,7 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	caps := fs.StringP("caps", "c", "", "the `SET` of capabilities the container has: a comma-separated list of names and\npresets (docker, podman, none, all), e.g. docker,SYS_ADMIN for Docker's defaults plus\nSYS_ADMIN. Resolves rules that depend on a capability, e.g. clone3 needs SYS_ADMIN")
 	arch := fs.StringP("arch", "a", "", "the CPU `ARCH` to evaluate for, a Go, libseccomp or uname -m name such as amd64 or\nx86_64. For this machine's, pass \"$(uname -m)\". Resolves rules that depend on it")
 	all := fs.BoolP("all", "A", false, "also list every syscall defined on --arch that has no rule left, with the\ndefault action.")
+	numeric := fs.BoolP("numeric", "n", false, "write argument values as numbers, not names such as AF_VSOCK or CLONE_NEWUSER")
 	showVersion := fs.Bool("version", false, "print the version and exit")
 	kernel := fs.StringP("kernel", "k", "", "the kernel `VERSION` to evaluate for, such as 6.8 or 6.8.0-45-generic. For this machine's,\npass \"$(uname -r)\". Resolves rules that depend on a minimum kernel")
 	fs.Usage = func() {
@@ -77,8 +78,8 @@ in the output.
 		}
 		ctx.Kernel = &v
 	}
-	if *toJSON && (fs.Changed("caps") || *arch != "" || *kernel != "" || *all) {
-		logf(stderr, "seccat: --caps, --arch, --kernel and --all do not apply to --json\n")
+	if *toJSON && (fs.Changed("caps") || *arch != "" || *kernel != "" || *all || *numeric) {
+		logf(stderr, "seccat: --caps, --arch, --kernel, --all and --numeric do not apply to --json\n")
 		return 2
 	}
 	if *all {
@@ -91,7 +92,7 @@ in the output.
 			return 2
 		}
 	}
-	if err := convert(fs.Arg(0), *toJSON, ctx, stdin, stdout, stderr); err != nil {
+	if err := convert(fs.Arg(0), *toJSON, *numeric, ctx, stdin, stdout, stderr); err != nil {
 		logf(stderr, "seccat: %v\n", err)
 		return 1
 	}
@@ -105,7 +106,7 @@ func openInput(name string, stdin io.Reader) (io.ReadCloser, error) {
 	return os.Open(name)
 }
 
-func convert(name string, toJSON bool, ctx Context, stdin io.Reader, stdout, stderr io.Writer) error {
+func convert(name string, toJSON, numeric bool, ctx Context, stdin io.Reader, stdout, stderr io.Writer) error {
 	in, err := openInput(name, stdin)
 	if err != nil {
 		return err
@@ -135,6 +136,9 @@ func convert(name string, toJSON bool, ctx Context, stdin io.Reader, stdout, std
 	warn(stderr, warnings)
 	if ctx.Syscalls != nil {
 		d = d.AddDefaults(ctx.Syscalls)
+	}
+	if numeric {
+		return d.WriteNumericText(stdout)
 	}
 	return d.WriteText(stdout)
 }
