@@ -1,0 +1,10 @@
+Upstream profiles, fetched 2026-10-03 from main:
+docker.json   https://raw.githubusercontent.com/moby/profiles/main/seccomp/default.json
+podman.json   https://raw.githubusercontent.com/containers/common/main/pkg/seccomp/seccomp.json
+
+Generated on 2026-10-04 by runc 1.5.1, unmodified:
+runc-config.json    runc spec
+runc-features.json  runc features | jq .
+
+Written for the tests: oci-seccomp.json, log-only.json.
+The .sec files are seccat's own output for the profiles above (make update-golden).

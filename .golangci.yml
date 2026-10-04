@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: BSD-2-Clause
+
+version: "2"
+linters:
+  default: standard
+  enable:
+    - errorlint
+    - gocritic
+    - misspell
+    - nolintlint
+    - unconvert
+    - usestdlibvars
+formatters:
+  enable:
+    - gofmt
+    - goimports

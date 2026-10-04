@@ -1,0 +1,487 @@
+@default	ERRNO(ENOSYS)
+@arch	x86_64	x86,x32
+@arch	aarch64	arm
+@arch	mips64	mips,mips64n32
+@arch	mips64n32	mips,mips64
+@arch	mipsel64	mipsel,mipsel64n32
+@arch	mipsel64n32	mipsel,mipsel64
+@arch	s390x	s390
+_llseek	ALLOW
+_newselect	ALLOW
+accept	ALLOW
+accept4	ALLOW
+access	ALLOW
+acct	ALLOW	cap:SYS_PACCT
+acct	ERRNO(EPERM)	!cap:SYS_PACCT
+adjtimex	ALLOW
+alarm	ALLOW
+arch_prctl	ALLOW	arch:amd64,x32
+arm_fadvise64_64	ALLOW	arch:arm,arm64
+arm_sync_file_range	ALLOW	arch:arm,arm64
+bdflush	ERRNO(EPERM)
+bind	ALLOW
+bpf	ALLOW	cap:BPF
+bpf	ALLOW	cap:SYS_ADMIN
+bpf	ERRNO(EPERM)	!cap:BPF && !cap:SYS_ADMIN
+breakpoint	ALLOW	arch:arm,arm64
+brk	ALLOW
+cacheflush	ALLOW	arch:arm,arm64
+cachestat	ERRNO(EPERM)
+capget	ALLOW
+capset	ALLOW
+chdir	ALLOW
+chmod	ALLOW
+chown	ALLOW
+chown32	ALLOW
+chroot	ALLOW	cap:SYS_CHROOT
+chroot	ERRNO(EPERM)	!cap:SYS_CHROOT
+clock_adjtime	ALLOW
+clock_adjtime64	ALLOW
+clock_getres	ALLOW
+clock_getres_time64	ALLOW
+clock_gettime	ALLOW
+clock_gettime64	ALLOW
+clock_nanosleep	ALLOW
+clock_nanosleep_time64	ALLOW
+clock_settime	ALLOW	cap:SYS_TIME
+clock_settime	ERRNO(EPERM)	!cap:SYS_TIME
+clock_settime64	ALLOW	cap:SYS_TIME
+clock_settime64	ERRNO(EPERM)	!cap:SYS_TIME
+clone	ALLOW
+clone3	ALLOW
+close	ALLOW
+close_range	ALLOW
+connect	ALLOW
+copy_file_range	ALLOW
+creat	ALLOW
+delete_module	ALLOW	cap:SYS_MODULE
+delete_module	ERRNO(EPERM)	!cap:SYS_MODULE
+dup	ALLOW
+dup2	ALLOW
+dup3	ALLOW
+epoll_create	ALLOW
+epoll_create1	ALLOW
+epoll_ctl	ALLOW
+epoll_ctl_old	ALLOW
+epoll_pwait	ALLOW
+epoll_pwait2	ALLOW
+epoll_wait	ALLOW
+epoll_wait_old	ALLOW
+eventfd	ALLOW
+eventfd2	ALLOW
+execve	ALLOW
+execveat	ALLOW
+exit	ALLOW
+exit_group	ALLOW
+faccessat	ALLOW
+faccessat2	ALLOW
+fadvise64	ALLOW
+fadvise64_64	ALLOW
+fallocate	ALLOW
+fanotify_init	ALLOW
+fanotify_mark	ALLOW
+fchdir	ALLOW
+fchmod	ALLOW
+fchmodat	ALLOW
+fchmodat2	ALLOW
+fchown	ALLOW
+fchown32	ALLOW
+fchownat	ALLOW
+fcntl	ALLOW
+fcntl64	ALLOW
+fdatasync	ALLOW
+fgetxattr	ALLOW
+finit_module	ALLOW	cap:SYS_MODULE
+finit_module	ERRNO(EPERM)	!cap:SYS_MODULE
+flistxattr	ALLOW
+flock	ALLOW
+fork	ALLOW
+fremovexattr	ALLOW
+fsconfig	ALLOW
+fsetxattr	ALLOW
+fsmount	ALLOW
+fsopen	ALLOW
+fspick	ALLOW
+fstat	ALLOW
+fstat64	ALLOW
+fstatat64	ALLOW
+fstatfs	ALLOW
+fstatfs64	ALLOW
+fsync	ALLOW
+ftruncate	ALLOW
+ftruncate64	ALLOW
+futex	ALLOW
+futex_requeue	ERRNO(EPERM)
+futex_time64	ALLOW
+futex_wait	ERRNO(EPERM)
+futex_waitv	ERRNO(EPERM)
+futex_wake	ERRNO(EPERM)
+futimesat	ALLOW
+get_mempolicy	ALLOW
+get_robust_list	ALLOW
+get_thread_area	ALLOW
+getcpu	ALLOW
+getcwd	ALLOW
+getdents	ALLOW
+getdents64	ALLOW
+getegid	ALLOW
+getegid32	ALLOW
+geteuid	ALLOW
+geteuid32	ALLOW
+getgid	ALLOW
+getgid32	ALLOW
+getgroups	ALLOW
+getgroups32	ALLOW
+getitimer	ALLOW
+getpeername	ALLOW
+getpgid	ALLOW
+getpgrp	ALLOW
+getpid	ALLOW
+getppid	ALLOW
+getpriority	ALLOW
+getrandom	ALLOW
+getresgid	ALLOW
+getresgid32	ALLOW
+getresuid	ALLOW
+getresuid32	ALLOW
+getrlimit	ALLOW
+getrusage	ALLOW
+getsid	ALLOW
+getsockname	ALLOW
+getsockopt	ALLOW
+gettid	ALLOW
+gettimeofday	ALLOW
+getuid	ALLOW
+getuid32	ALLOW
+getxattr	ALLOW
+init_module	ALLOW	cap:SYS_MODULE
+init_module	ERRNO(EPERM)	!cap:SYS_MODULE
+inotify_add_watch	ALLOW
+inotify_init	ALLOW
+inotify_init1	ALLOW
+inotify_rm_watch	ALLOW
+io_cancel	ALLOW
+io_destroy	ALLOW
+io_getevents	ALLOW
+io_pgetevents	ERRNO(EPERM)
+io_pgetevents_time64	ERRNO(EPERM)
+io_setup	ALLOW
+io_submit	ALLOW
+ioctl	ALLOW
+ioperm	ALLOW	cap:SYS_RAWIO
+ioperm	ERRNO(EPERM)	!cap:SYS_RAWIO
+iopl	ALLOW	cap:SYS_RAWIO
+iopl	ERRNO(EPERM)	!cap:SYS_RAWIO
+ioprio_get	ALLOW
+ioprio_set	ALLOW
+ipc	ALLOW
+kcmp	ALLOW	cap:SYS_PTRACE
+kcmp	ERRNO(EPERM)	!cap:SYS_PTRACE
+kexec_file_load	ERRNO(EPERM)
+kexec_load	ERRNO(EPERM)
+keyctl	ALLOW
+kill	ALLOW
+landlock_add_rule	ALLOW
+landlock_create_ruleset	ALLOW
+landlock_restrict_self	ALLOW
+lchown	ALLOW
+lchown32	ALLOW
+lgetxattr	ALLOW
+link	ALLOW
+linkat	ALLOW
+listen	ALLOW
+listxattr	ALLOW
+llistxattr	ALLOW
+lookup_dcookie	ALLOW	cap:SYS_ADMIN
+lookup_dcookie	ERRNO(EPERM)	!cap:SYS_ADMIN
+lremovexattr	ALLOW
+lseek	ALLOW
+lsetxattr	ALLOW
+lstat	ALLOW
+lstat64	ALLOW
+madvise	ALLOW
+map_shadow_stack	ERRNO(EPERM)
+mbind	ALLOW
+membarrier	ALLOW
+memfd_create	ALLOW
+memfd_secret	ALLOW
+migrate_pages	ERRNO(EPERM)
+mincore	ALLOW
+mkdir	ALLOW
+mkdirat	ALLOW
+mknod	ALLOW
+mknodat	ALLOW
+mlock	ALLOW
+mlock2	ALLOW
+mlockall	ALLOW
+mmap	ALLOW
+mmap2	ALLOW
+modify_ldt	ALLOW	arch:amd64,x32,x86
+mount	ALLOW
+mount_setattr	ALLOW
+move_mount	ALLOW
+move_pages	ERRNO(EPERM)
+mprotect	ALLOW
+mq_getsetattr	ALLOW
+mq_notify	ALLOW
+mq_open	ALLOW
+mq_timedreceive	ALLOW
+mq_timedreceive_time64	ALLOW
+mq_timedsend	ALLOW
+mq_timedsend_time64	ALLOW
+mq_unlink	ALLOW
+mremap	ALLOW
+msgctl	ALLOW
+msgget	ALLOW
+msgrcv	ALLOW
+msgsnd	ALLOW
+msync	ALLOW
+munlock	ALLOW
+munlockall	ALLOW
+munmap	ALLOW
+name_to_handle_at	ALLOW
+nanosleep	ALLOW
+newfstatat	ALLOW
+nfsservctl	ERRNO(EPERM)
+nice	ERRNO(EPERM)
+oldfstat	ERRNO(EPERM)
+oldlstat	ERRNO(EPERM)
+oldolduname	ERRNO(EPERM)
+oldstat	ERRNO(EPERM)
+olduname	ERRNO(EPERM)
+open	ALLOW
+open_by_handle_at	ALLOW	cap:DAC_READ_SEARCH
+open_by_handle_at	ERRNO(EPERM)	!cap:DAC_READ_SEARCH
+open_tree	ALLOW
+openat	ALLOW
+openat2	ALLOW
+pause	ALLOW
+pciconfig_iobase	ERRNO(EPERM)
+pciconfig_read	ERRNO(EPERM)
+pciconfig_write	ERRNO(EPERM)
+perf_event_open	ALLOW	cap:PERFMON
+perf_event_open	ERRNO(EPERM)	!cap:BPF && !cap:SYS_ADMIN
+perf_event_open	ERRNO(EPERM)	!cap:SYS_ADMIN
+personality	ALLOW	arg0==0xffffffff
+personality	ALLOW	arg0==PER_LINUX
+personality	ALLOW	arg0==PER_LINUX32
+personality	ALLOW	arg0==PER_LINUX32|UNAME26
+personality	ALLOW	arg0==UNAME26
+pidfd_getfd	ALLOW
+pidfd_open	ALLOW
+pidfd_send_signal	ALLOW
+pipe	ALLOW
+pipe2	ALLOW
+pivot_root	ALLOW
+pkey_alloc	ALLOW
+pkey_free	ALLOW
+pkey_mprotect	ALLOW
+poll	ALLOW
+ppoll	ALLOW
+ppoll_time64	ALLOW
+prctl	ALLOW
+pread64	ALLOW
+preadv	ALLOW
+preadv2	ALLOW
+prlimit64	ALLOW
+process_madvise	ALLOW	cap:SYS_PTRACE
+process_madvise	ERRNO(EPERM)	!cap:SYS_PTRACE
+process_mrelease	ALLOW
+process_vm_readv	ALLOW
+process_vm_writev	ALLOW
+pselect6	ALLOW
+pselect6_time64	ALLOW
+ptrace	ALLOW
+pwrite64	ALLOW
+pwritev	ALLOW
+pwritev2	ALLOW
+query_module	ALLOW	cap:SYS_MODULE
+query_module	ERRNO(EPERM)	!cap:SYS_MODULE
+quotactl	ALLOW	cap:SYS_ADMIN
+quotactl	ERRNO(EPERM)	!cap:SYS_ADMIN
+quotactl_fd	ALLOW	cap:SYS_ADMIN
+quotactl_fd	ERRNO(EPERM)	!cap:SYS_ADMIN
+read	ALLOW
+readahead	ALLOW
+readlink	ALLOW
+readlinkat	ALLOW
+readv	ALLOW
+reboot	ALLOW
+recv	ALLOW
+recvfrom	ALLOW
+recvmmsg	ALLOW
+recvmmsg_time64	ALLOW
+recvmsg	ALLOW
+remap_file_pages	ALLOW
+removexattr	ALLOW
+rename	ALLOW
+renameat	ALLOW
+renameat2	ALLOW
+restart_syscall	ALLOW
+riscv_flush_icache	ALLOW	arch:riscv64
+rmdir	ALLOW
+rseq	ALLOW
+rt_sigaction	ALLOW
+rt_sigpending	ALLOW
+rt_sigprocmask	ALLOW
+rt_sigqueueinfo	ALLOW
+rt_sigreturn	ALLOW
+rt_sigsuspend	ALLOW
+rt_sigtimedwait	ALLOW
+rt_sigtimedwait_time64	ALLOW
+rt_tgsigqueueinfo	ALLOW
+s390_pci_mmio_read	ALLOW	arch:s390,s390x
+s390_pci_mmio_write	ALLOW	arch:s390,s390x
+s390_runtime_instr	ALLOW	arch:s390,s390x
+sched_get_priority_max	ALLOW
+sched_get_priority_min	ALLOW
+sched_getaffinity	ALLOW
+sched_getattr	ALLOW
+sched_getparam	ALLOW
+sched_getscheduler	ALLOW
+sched_rr_get_interval	ALLOW
+sched_rr_get_interval_time64	ALLOW
+sched_setaffinity	ALLOW
+sched_setattr	ALLOW
+sched_setparam	ALLOW
+sched_setscheduler	ALLOW
+sched_yield	ALLOW
+seccomp	ALLOW
+select	ALLOW
+semctl	ALLOW
+semget	ALLOW
+semop	ALLOW
+semtimedop	ALLOW
+semtimedop_time64	ALLOW
+send	ALLOW
+sendfile	ALLOW
+sendfile64	ALLOW
+sendmmsg	ALLOW
+sendmsg	ALLOW
+sendto	ALLOW
+set_mempolicy	ALLOW
+set_robust_list	ALLOW
+set_thread_area	ALLOW
+set_tid_address	ALLOW
+set_tls	ALLOW	arch:arm,arm64
+setdomainname	ALLOW	cap:SYS_ADMIN
+setdomainname	ERRNO(EPERM)	!cap:SYS_ADMIN
+setfsgid	ALLOW
+setfsgid32	ALLOW
+setfsuid	ALLOW
+setfsuid32	ALLOW
+setgid	ALLOW
+setgid32	ALLOW
+setgroups	ALLOW
+setgroups32	ALLOW
+sethostname	ALLOW	cap:SYS_ADMIN
+sethostname	ERRNO(EPERM)	!cap:SYS_ADMIN
+setitimer	ALLOW
+setns	ALLOW
+setns	ALLOW	cap:SYS_ADMIN
+setns	ERRNO(EPERM)	!cap:SYS_ADMIN
+setpgid	ALLOW
+setpriority	ALLOW
+setregid	ALLOW
+setregid32	ALLOW
+setresgid	ALLOW
+setresgid32	ALLOW
+setresuid	ALLOW
+setresuid32	ALLOW
+setreuid	ALLOW
+setreuid32	ALLOW
+setrlimit	ALLOW
+setsid	ALLOW
+setsockopt	ALLOW
+settimeofday	ALLOW	cap:SYS_TIME
+settimeofday	ERRNO(EPERM)	!cap:SYS_TIME
+setuid	ALLOW
+setuid32	ALLOW
+setxattr	ALLOW
+sgetmask	ERRNO(EPERM)
+shmat	ALLOW
+shmctl	ALLOW
+shmdt	ALLOW
+shmget	ALLOW
+shutdown	ALLOW
+sigaltstack	ALLOW
+signal	ALLOW
+signalfd	ALLOW
+signalfd4	ALLOW
+sigprocmask	ALLOW
+sigreturn	ALLOW
+socket	ALLOW	arg0!=AF_NETLINK && !cap:AUDIT_WRITE
+socket	ALLOW	arg2!=9 && !cap:AUDIT_WRITE
+socket	ALLOW	arg2!=9 && !cap:AUDIT_WRITE
+socket	ALLOW	cap:AUDIT_WRITE
+socket	ERRNO(EINVAL)	arg0==AF_NETLINK && arg2==NETLINK_AUDIT && !cap:AUDIT_WRITE
+socketcall	ALLOW
+socketpair	ALLOW
+splice	ALLOW
+ssetmask	ERRNO(EPERM)
+stat	ALLOW
+stat64	ALLOW
+statfs	ALLOW
+statfs64	ALLOW
+statx	ALLOW
+stime	ALLOW	cap:SYS_TIME
+stime	ERRNO(EPERM)	!cap:SYS_TIME
+swapcontext	ALLOW	arch:ppc64le
+swapoff	ERRNO(EPERM)
+swapon	ERRNO(EPERM)
+symlink	ALLOW
+symlinkat	ALLOW
+sync	ALLOW
+sync_file_range	ALLOW
+sync_file_range2	ALLOW	arch:arm,arm64
+sync_file_range2	ALLOW	arch:ppc64le
+syncfs	ALLOW
+syscall	ERRNO(EPERM)
+sysfs	ERRNO(EPERM)
+sysinfo	ALLOW
+syslog	ALLOW
+tee	ALLOW
+tgkill	ALLOW
+time	ALLOW
+timer_create	ALLOW
+timer_delete	ALLOW
+timer_getoverrun	ALLOW
+timer_gettime	ALLOW
+timer_gettime64	ALLOW
+timer_settime	ALLOW
+timer_settime64	ALLOW
+timerfd_create	ALLOW
+timerfd_gettime	ALLOW
+timerfd_gettime64	ALLOW
+timerfd_settime	ALLOW
+timerfd_settime64	ALLOW
+times	ALLOW
+tkill	ALLOW
+truncate	ALLOW
+truncate64	ALLOW
+ugetrlimit	ALLOW
+umask	ALLOW
+umount	ALLOW
+umount2	ALLOW
+uname	ALLOW
+unlink	ALLOW
+unlinkat	ALLOW
+unshare	ALLOW
+uselib	ERRNO(EPERM)
+userfaultfd	ERRNO(EPERM)
+ustat	ERRNO(EPERM)
+utime	ALLOW
+utimensat	ALLOW
+utimensat_time64	ALLOW
+utimes	ALLOW
+vfork	ALLOW
+vhangup	ALLOW	cap:SYS_TTY_CONFIG
+vhangup	ERRNO(EPERM)	!cap:SYS_TTY_CONFIG
+vm86	ERRNO(EPERM)
+vm86old	ERRNO(EPERM)
+vmsplice	ERRNO(EPERM)
+wait4	ALLOW
+waitid	ALLOW
+waitpid	ALLOW
+write	ALLOW
+writev	ALLOW

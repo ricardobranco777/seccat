@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: BSD-2-Clause
+
+name: release
+
+# Push a tag such as v0.1.0 to build the binaries and publish them.
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+*']
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      # The version comes from git, in the Makefile. It must be the tag being released.
+      - name: Check the version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version=$(make -s version)
+          [ "$version" = "$TAG" ] || { echo "the Makefile says $version, but the tag is $TAG" >&2; exit 1; }
+      - name: Build
+        run: make release
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          case "$TAG" in *-*) prerelease=--prerelease ;; *) prerelease= ;; esac
+          gh release create "$TAG" dist/* \
+            --verify-tag --generate-notes --title "$TAG" $prerelease

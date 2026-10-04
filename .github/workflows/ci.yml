@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: BSD-2-Clause
+
+name: ci
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+env:
+  GOLANGCI_LINT_VERSION: v2.13.1
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      # Built with the Go version under test, as golangci-lint must be.
+      - name: Install golangci-lint
+        run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@${{ env.GOLANGCI_LINT_VERSION }}
+      - name: Check
+        run: make check
+      # Catches a build that breaks on one architecture before a release does.
+      - name: Build the release binaries
+        run: make release

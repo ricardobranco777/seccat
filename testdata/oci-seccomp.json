@@ -1,0 +1,20 @@
+{
+  "defaultAction": "SCMP_ACT_ERRNO",
+  "defaultErrnoRet": 38,
+  "architectures": ["SCMP_ARCH_X86_64", "SCMP_ARCH_X86", "SCMP_ARCH_X32"],
+  "flags": ["SECCOMP_FILTER_FLAG_LOG"],
+  "listenerPath": "/run/seccomp-agent.socket",
+  "listenerMetadata": "example",
+  "syscalls": [
+    {"names": ["read", "write", "exit_group", "futex"], "action": "SCMP_ACT_ALLOW"},
+    {"names": ["getcwd"], "action": "SCMP_ACT_ERRNO", "errnoRet": 55},
+    {"names": ["ptrace"], "action": "SCMP_ACT_KILL_PROCESS"},
+    {"names": ["chmod", "mkdir"], "action": "SCMP_ACT_NOTIFY"},
+    {"names": ["socket"], "action": "SCMP_ACT_ALLOW", "args": [{"index": 0, "value": 16, "op": "SCMP_CMP_NE"}]},
+    {"names": ["socket"], "action": "SCMP_ACT_ALLOW", "args": [{"index": 2, "value": 3840, "op": "SCMP_CMP_MASKED_EQ"}]},
+    {"names": ["clone"], "action": "SCMP_ACT_ALLOW", "args": [{"index": 0, "value": 2114060288, "op": "SCMP_CMP_MASKED_EQ"}]},
+    {"names": ["dup3"], "action": "SCMP_ACT_ALLOW", "args": [{"index": 0, "value": 2, "op": "SCMP_CMP_GT"}]},
+    {"names": ["ftruncate"], "action": "SCMP_ACT_ALLOW", "args": [{"index": 0, "value": 100, "op": "SCMP_CMP_EQ"}, {"index": 1, "value": 1337, "op": "SCMP_CMP_EQ"}]},
+    {"names": ["process_vm_writev"], "action": "SCMP_ACT_ERRNO", "errnoRet": 55, "args": [{"index": 0, "value": 1, "op": "SCMP_CMP_EQ"}, {"index": 0, "value": 2, "op": "SCMP_CMP_EQ"}]}
+  ]
+}

@@ -1,0 +1,10 @@
+syscalls.csv is libseccomp's syscall table, copied unmodified from
+https://github.com/seccomp/libseccomp (src/syscalls.csv, main at commit 90d3f7dd6f52dbf0f4a38ebd0657032b6ef05e6a,
+fetched 2026-10-03). It maps each syscall name to its number on each
+architecture; PNR means the syscall is not defined there.
+
+libseccomp is licensed under the GNU Lesser General Public License, version 2.1;
+the license text is in LICENSE next to this file. The rest of this repository is
+BSD-2-Clause.
+
+Update with: make update-syscalls
