@@ -42,8 +42,10 @@ update-syscalls:
 # names carry no version, so that .../releases/latest/download/seccat-linux-amd64
 # always works; the version is in the release and in seccat --version. The
 # binaries are static (no cgo), with debug information stripped and build paths
-# removed. Building the same commit with the same Go version gives the same files, so
-# anyone can check a release against their own build.
+# removed. GOAMD64 and GOARM64 are pinned to the baseline, so the binaries run on any
+# CPU of the architecture and do not depend on the builder's environment. Building
+# the same commit with the same Go version gives the same files, so anyone can check
+# a release against their own build.
 release:
 	@case "$$VERSION" in ''|*[!A-Za-z0-9._+-]*) \
 		echo "the version must be letters, digits and . _ + - only, but is: $$VERSION" >&2; exit 1;; esac
@@ -52,7 +54,7 @@ release:
 	@for arch in $(RELEASE_ARCHES); do \
 		name=seccat-linux-$$arch; \
 		echo $$name; \
-		CGO_ENABLED=0 GOOS=linux GOARCH=$$arch go build -trimpath \
+		CGO_ENABLED=0 GOOS=linux GOARCH=$$arch GOAMD64=v1 GOARM64=v8.0 go build -trimpath \
 			-ldflags "-s -w $(LDFLAGS)" -o dist/$$name . || exit 1; \
 	done
 	cd dist && sha256sum seccat-* > SHA256SUMS
