@@ -11,6 +11,14 @@ text format of [seccat](../README.md): one
     kexec_load	TRAP
     swapoff	KILL
 
+It works without running the calls, using seccomp's user notification
+(`seccomp_unotify(2)`, Linux 5.0 or later). For each syscall a child process stacks
+its own filter that answers `SECCOMP_RET_USER_NOTIF` for that syscall only, and
+makes the call. That action ranks below kill, trap and errno, so if secprobe, as
+the supervisor, gets a notification, the inherited filters allow the call, and it
+answers with an error so the kernel never runs it. If instead the child gets an
+errno or is killed or trapped, an inherited filter did that.
+
 The action is `ALLOW`, `ERRNO(NAME)`, `KILL` or `TRAP`. A call that hangs is
 reported on stderr and left out, and so are the ones the probe can't test
 (`write`, `sendmsg`, `exit_group`, `uprobe` and `uretprobe`). It does not report the

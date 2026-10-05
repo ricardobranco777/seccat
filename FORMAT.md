@@ -36,6 +36,9 @@ alternatives; the conditions within one line must all hold.
 `SCMP_ACT_` is stripped: `ALLOW`, `ERRNO`, `ERRNO(EPERM)`, `KILL`,
 `KILL_PROCESS`, `KILL_THREAD`, `TRAP`, `TRACE`, `TRACE(5)`, `LOG`, `NOTIFY`.
 
+`NOTIFY` hands the call to a supervisor process through seccomp's user
+notification (`seccomp_unotify(2)`), which decides what happens to it.
+
 A bare `ERRNO` means the entry has no `errnoRet` and inherits the profile
 default. `ERRNO(EPERM)` is explicit. Errno numbers without a name stay numeric:
 `ERRNO(4000)`.
