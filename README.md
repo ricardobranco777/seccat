@@ -115,6 +115,13 @@ the result with seccat's output using `diff`. It also has `seccomp-compile`, whi
 compiles seccat's text to BPF with libseccomp. They are in C, for Linux only, and
 not in the release binaries.
 
+Related projects:
+
+- [oci-seccomp-bpf-hook](https://github.com/containers/oci-seccomp-bpf-hook):
+  generates a profile from the syscalls a container makes.
+- [seccomp-tools](https://github.com/david942j/seccomp-tools): dumps, disassembles
+  and emulates compiled BPF filters.
+
 ## More
 
 - [FAQ.md](FAQ.md): worked examples, how conversion and testing work, limits.
