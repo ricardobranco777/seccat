@@ -16,7 +16,7 @@ env:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-go@v7
@@ -30,3 +30,18 @@ jobs:
       # Catches a build that breaks on one architecture before a release does.
       - name: Build the release binaries
         run: make release
+
+  # Checks seccat against filters compiled with libseccomp and loaded in the kernel.
+  tools:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: Install libseccomp and clang-format
+        run: sudo apt-get update && sudo apt-get install -y libseccomp-dev clang-format
+      - name: Check the C code
+        run: make check-tools
+      - name: Test the tools
+        run: make test-tools

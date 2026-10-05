@@ -112,8 +112,10 @@ architectures and kernel versions. They also check that converting a profile to
 text and back keeps its behavior, and that the OCI input handles real files from
 `runc spec`.
 
-The tests compare profiles as data. They don't run a container or load a profile
-into runc or libseccomp.
+The Go tests compare profiles as data. `make test-tools` also compiles the Docker
+and Podman profiles with libseccomp, loads them, and checks with `secprobe` that the
+kernel does what seccat says, for several capability sets. It still doesn't run a
+container or runc.
 
 ## What happens if I mistype a capability, architecture or syscall name?
 
@@ -225,7 +227,10 @@ and crun read, using the container's capabilities, the host architecture and the
 host kernel. `--caps`, `--arch` and `--kernel` follow that step. Not modeled:
 
 - When several remaining rules match one call, libseccomp decides which action wins.
-- runc returns `ENOSYS` for syscalls newer than any the profile names, instead of the default action.
+- runc returns `ENOSYS`, instead of the default action, for syscalls numbered above
+  the largest one any rule of the profile names, for each architecture. It does not
+  when the default action is `ALLOW`, `LOG` or `TRACE`, or when the profile's default
+  errno is already `ENOSYS`. crun does not do this.
 - libseccomp skips syscall names it doesn't know for the target architecture.
 - Argument conditions are shown, not evaluated.
 

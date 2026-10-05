@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: BSD-2-Clause
+#
+# The style the C code is already in: the kernel's, with a longer line.
+BasedOnStyle: LLVM
+IndentWidth: 8
+UseTab: Always
+TabWidth: 8
+ColumnLimit: 100
+BreakBeforeBraces: Linux
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+IndentCaseLabels: false
+SortIncludes: Never
+AlignAfterOpenBracket: Align
+PointerAlignment: Right

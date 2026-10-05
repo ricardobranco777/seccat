@@ -1,2 +1,5 @@
 seccat
 /dist/
+/tools/secprobe
+/tools/seccomp-compile
+/tools/syscalls.h

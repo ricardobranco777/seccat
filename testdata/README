@@ -8,3 +8,4 @@ runc-features.json  runc features | jq .
 
 Written for the tests: oci-seccomp.json, log-only.json.
 The .sec files are seccat's own output for the profiles above (make update-golden).
+tools/test.sh (make test-tools) also compiles docker.json and podman.json with libseccomp.

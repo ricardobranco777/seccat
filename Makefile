@@ -11,13 +11,25 @@ LDFLAGS = -X main.version=$$VERSION
 # Linux architectures in the release binaries.
 RELEASE_ARCHES = amd64 arm64
 
-.PHONY: build test fix check update-golden update-syscalls release version
+.PHONY: build test tools check-tools test-tools fix check update-golden update-syscalls release version
 
 build:
 	go build -ldflags "$(LDFLAGS)" -o seccat .
 
 test:
 	go test -race ./...
+
+# tools/ has secprobe and seccomp-compile, in C; seccomp-compile needs
+# libseccomp's headers. check-tools checks their format with clang-format and
+# builds them with -Werror. test-tools checks seccat against real filters.
+tools:
+	$(MAKE) -C tools secprobe seccomp-compile
+
+check-tools:
+	$(MAKE) -C tools check
+
+test-tools: build
+	$(MAKE) -C tools test
 
 fix:
 	go fix ./...

@@ -107,6 +107,14 @@ for example `-a "$(uname -m)" -k "$(uname -r)"`. The text format is described in
 [moby]: https://raw.githubusercontent.com/moby/profiles/main/seccomp/default.json
 [podman]: https://raw.githubusercontent.com/containers/common/main/pkg/seccomp/seccomp.json
 
+## Tools
+
+[tools/](tools/README.md) has `secprobe`, which prints what the seccomp filters of
+a process do to each syscall, in seccat's format. Run it in a container and compare
+the result with seccat's output using `diff`. It also has `seccomp-compile`, which
+compiles seccat's text to BPF with libseccomp. They are in C, for Linux only, and
+not in the release binaries.
+
 ## More
 
 - [FAQ.md](FAQ.md): worked examples, how conversion and testing work, limits.
@@ -122,5 +130,8 @@ under the LGPL-2.1; see the notes there.
 `make check` runs the linters and the tests, and CI runs it on every push and
 pull request. To release, push a tag such as `v0.1.0`: the release workflow runs
 the checks, builds the binaries with `make release` and publishes them. The version
-comes from the git tag. `make update-golden` and `make update-syscalls` refresh the
-expected test output and libseccomp's syscall table.
+comes from the git tag. `make test-tools` checks seccat against filters compiled
+with libseccomp, and needs libseccomp's headers. `make check-tools` checks the format
+of the C code with clang-format and builds it with `-Werror`. `make update-golden` and
+`make update-syscalls` refresh the expected test output and libseccomp's syscall
+table.
