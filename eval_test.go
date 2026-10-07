@@ -83,9 +83,9 @@ func TestEval(t *testing.T) {
 			func(t *testing.T) Context { return Context{Caps: mustCaps(t, "none")} },
 			[]string{
 				"socket\tALLOW\targ0!=AF_NETLINK",
-				"socket\tALLOW\targ2!=9",
-				"socket\tALLOW\targ2!=9",
+				"socket\tALLOW\targ0==AF_NETLINK && arg2!=NETLINK_AUDIT",
 				"socket\tERRNO(EINVAL)\targ0==AF_NETLINK && arg2==NETLINK_AUDIT",
+				"socket\tERRNO(EPERM)\targ0==AF_VSOCK",
 			}},
 		{"clone amd64", "docker", "clone",
 			func(t *testing.T) Context { return Context{Arch: "amd64", Caps: mustCaps(t, "docker")} },

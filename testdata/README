@@ -1,6 +1,6 @@
-Upstream profiles, fetched 2026-10-03 from main:
+Upstream profiles, fetched 2026-10-07 from main:
 docker.json   https://raw.githubusercontent.com/moby/profiles/main/seccomp/default.json
-podman.json   https://raw.githubusercontent.com/containers/common/main/pkg/seccomp/seccomp.json
+podman.json   https://raw.githubusercontent.com/podman-container-tools/container-libs/main/common/pkg/seccomp/seccomp.json
 
 Generated on 2026-10-04 by runc 1.5.1, unmodified:
 runc-config.json    runc spec

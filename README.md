@@ -42,12 +42,12 @@ the two defaults can be compared with `diff`:
 
 ```
 docker=https://raw.githubusercontent.com/moby/profiles/main/seccomp/default.json
-podman=https://raw.githubusercontent.com/containers/common/main/pkg/seccomp/seccomp.json
+podman=https://raw.githubusercontent.com/podman-container-tools/container-libs/main/common/pkg/seccomp/seccomp.json
 diff <(curl -sSfL $docker | seccat -A -a $(uname -m) -c docker -k $(uname -r)) \
      <(curl -sSfL $podman | seccat -A -a $(uname -m) -c podman -k $(uname -r))
 ```
 
-A few of the 182 lines that differ:
+A few of the 173 lines that differ:
 
 ```
 < @default	ERRNO(EPERM)
@@ -105,7 +105,7 @@ for example `-a "$(uname -m)" -k "$(uname -r)"`. The text format is described in
 [FORMAT.md](FORMAT.md).
 
 [moby]: https://raw.githubusercontent.com/moby/profiles/main/seccomp/default.json
-[podman]: https://raw.githubusercontent.com/containers/common/main/pkg/seccomp/seccomp.json
+[podman]: https://raw.githubusercontent.com/podman-container-tools/container-libs/main/common/pkg/seccomp/seccomp.json
 
 ## Tools
 

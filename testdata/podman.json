@@ -56,10 +56,6 @@
 			"names": [
 				"bdflush",
 				"cachestat",
-				"futex_requeue",
-				"futex_wait",
-				"futex_waitv",
-				"futex_wake",
 				"io_pgetevents",
 				"io_pgetevents_time64",
 				"kexec_file_load",
@@ -183,7 +179,11 @@
 				"ftruncate",
 				"ftruncate64",
 				"futex",
+				"futex_requeue",
 				"futex_time64",
+				"futex_wait",
+				"futex_waitv",
+				"futex_wake",
 				"futimesat",
 				"get_mempolicy",
 				"get_robust_list",
@@ -647,7 +647,8 @@
 		},
 		{
 			"names": [
-				"riscv_flush_icache"
+				"riscv_flush_icache",
+				"riscv_hwprobe"
 			],
 			"action": "SCMP_ACT_ALLOW",
 			"args": [],
@@ -693,6 +694,7 @@
 			"names": [
 				"bpf",
 				"lookup_dcookie",
+				"perf_event_open",
 				"quotactl",
 				"quotactl_fd",
 				"setdomainname",
@@ -712,7 +714,6 @@
 		{
 			"names": [
 				"lookup_dcookie",
-				"perf_event_open",
 				"quotactl",
 				"quotactl_fd",
 				"setdomainname",
@@ -954,6 +955,25 @@
 					"CAP_SYS_TTY_CONFIG"
 				]
 			},
+			"errnoRet": 1,
+			"errno": "EPERM"
+		},
+		{
+			"names": [
+				"socket"
+			],
+			"action": "SCMP_ACT_ERRNO",
+			"args": [
+				{
+					"index": 0,
+					"value": 40,
+					"valueTwo": 0,
+					"op": "SCMP_CMP_EQ"
+				}
+			],
+			"comment": "",
+			"includes": {},
+			"excludes": {},
 			"errnoRet": 1,
 			"errno": "EPERM"
 		},
@@ -993,6 +1013,12 @@
 			"action": "SCMP_ACT_ALLOW",
 			"args": [
 				{
+					"index": 0,
+					"value": 16,
+					"valueTwo": 0,
+					"op": "SCMP_CMP_EQ"
+				},
+				{
 					"index": 2,
 					"value": 9,
 					"valueTwo": 0,
@@ -1035,26 +1061,12 @@
 			"action": "SCMP_ACT_ALLOW",
 			"args": [
 				{
-					"index": 2,
-					"value": 9,
+					"index": 0,
+					"value": 40,
 					"valueTwo": 0,
 					"op": "SCMP_CMP_NE"
 				}
 			],
-			"comment": "",
-			"includes": {},
-			"excludes": {
-				"caps": [
-					"CAP_AUDIT_WRITE"
-				]
-			}
-		},
-		{
-			"names": [
-				"socket"
-			],
-			"action": "SCMP_ACT_ALLOW",
-			"args": null,
 			"comment": "",
 			"includes": {
 				"caps": [
@@ -1105,7 +1117,7 @@
 			"excludes": {
 				"caps": [
 					"CAP_SYS_ADMIN",
-					"CAP_BPF"
+					"CAP_PERFMON"
 				]
 			},
 			"errnoRet": 1,

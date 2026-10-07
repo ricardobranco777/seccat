@@ -111,11 +111,11 @@ fsync	ALLOW
 ftruncate	ALLOW
 ftruncate64	ALLOW
 futex	ALLOW
-futex_requeue	ERRNO(EPERM)
+futex_requeue	ALLOW
 futex_time64	ALLOW
-futex_wait	ERRNO(EPERM)
-futex_waitv	ERRNO(EPERM)
-futex_wake	ERRNO(EPERM)
+futex_wait	ALLOW
+futex_waitv	ALLOW
+futex_wake	ALLOW
 futimesat	ALLOW
 get_mempolicy	ALLOW
 get_robust_list	ALLOW
@@ -260,8 +260,8 @@ pciconfig_iobase	ERRNO(EPERM)
 pciconfig_read	ERRNO(EPERM)
 pciconfig_write	ERRNO(EPERM)
 perf_event_open	ALLOW	cap:PERFMON
-perf_event_open	ERRNO(EPERM)	!cap:BPF && !cap:SYS_ADMIN
-perf_event_open	ERRNO(EPERM)	!cap:SYS_ADMIN
+perf_event_open	ALLOW	cap:SYS_ADMIN
+perf_event_open	ERRNO(EPERM)	!cap:PERFMON && !cap:SYS_ADMIN
 personality	ALLOW	arg0==0xffffffff
 personality	ALLOW	arg0==PER_LINUX
 personality	ALLOW	arg0==PER_LINUX32
@@ -319,6 +319,7 @@ renameat	ALLOW
 renameat2	ALLOW
 restart_syscall	ALLOW
 riscv_flush_icache	ALLOW	arch:riscv64
+riscv_hwprobe	ALLOW	arch:riscv64
 rmdir	ALLOW
 rseq	ALLOW
 rt_sigaction	ALLOW
@@ -411,10 +412,10 @@ signalfd4	ALLOW
 sigprocmask	ALLOW
 sigreturn	ALLOW
 socket	ALLOW	arg0!=AF_NETLINK && !cap:AUDIT_WRITE
-socket	ALLOW	arg2!=9 && !cap:AUDIT_WRITE
-socket	ALLOW	arg2!=9 && !cap:AUDIT_WRITE
-socket	ALLOW	cap:AUDIT_WRITE
+socket	ALLOW	arg0!=AF_VSOCK && cap:AUDIT_WRITE
+socket	ALLOW	arg0==AF_NETLINK && arg2!=NETLINK_AUDIT && !cap:AUDIT_WRITE
 socket	ERRNO(EINVAL)	arg0==AF_NETLINK && arg2==NETLINK_AUDIT && !cap:AUDIT_WRITE
+socket	ERRNO(EPERM)	arg0==AF_VSOCK
 socketcall	ALLOW
 socketpair	ALLOW
 splice	ALLOW

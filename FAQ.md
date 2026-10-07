@@ -59,7 +59,7 @@ comm -13 <(seccat -c docker -a amd64 -k 6.8 docker.json | grep -w ALLOW | cut -f
 ```
 
 That lists 23 syscalls, among them `clone3` and the new mount calls (`fsopen`,
-`fsmount`, ...). Use `comm -23` for the 18 that only Docker allows.
+`fsmount`, ...). Use `comm -23` for the 14 that only Docker allows.
 
 ## Why does diffing the two profiles show differences that aren't real?
 
@@ -68,8 +68,8 @@ and Podman denies many syscalls explicitly with `EPERM`. A plain `diff` reports
 such a syscall, `acct` for one, as different even though both return `EPERM`.
 
 `--all` (`-A`), as in the command above, lists every syscall of the architecture
-on both sides, which removes that noise. The diff gets longer (139 lines become
-182 on the current snapshots), because the defaults differ and that now shows for
+on both sides, which removes that noise. The diff gets longer (130 lines become
+173 on the current snapshots), because the defaults differ and that now shows for
 each syscall neither profile mentions. `--all` output is for comparing, not a
 profile: converting it back would write an explicit rule for every syscall of one
 architecture.

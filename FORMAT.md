@@ -107,7 +107,7 @@ runs compared by value, so `arg0==8` comes before `arg0==10`.
 
 Lines with the same action, conditions and comment become one entry with a
 sorted `names` list; entries are ordered by first name. A line repeated in the
-text becomes a repeated entry, never merged (Podman's profile has one
+text becomes a repeated entry, never merged (an older Podman profile had one
 such duplicate).
 
 Behavior is preserved; the file is not. Not preserved: entry order and grouping,
