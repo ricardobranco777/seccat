@@ -5,6 +5,8 @@ CFLAGS ?= -O2 -Wall -Wextra
 CLANG_FORMAT ?= clang-format
 SOURCES = secprobe.c seccomp-compile.c
 
+all: secprobe seccomp-compile
+
 secprobe: secprobe.c syscalls.h
 	$(CC) $(CFLAGS) -o $@ secprobe.c
 
@@ -56,4 +58,4 @@ fmt:
 clean:
 	rm -f secprobe syscalls.h seccomp-compile
 
-.PHONY: static test check fmt clean
+.PHONY: all static test check fmt clean
