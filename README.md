@@ -32,7 +32,7 @@ seccat then evaluates those conditions the way Docker and Podman do before they
 hand the profile to runc or crun:
 
 ```
-$ seccat -c docker -a amd64 -k 6.8 docker.json | grep -w -e clone3 -e ptrace
+$ seccat -c docker -a $(uname -m) -k $(uname -r) docker.json | grep -w -e clone3 -e ptrace
 clone3	ERRNO(ENOSYS)
 ptrace	ALLOW
 ```
@@ -43,8 +43,8 @@ the two defaults can be compared with `diff`:
 ```
 docker=https://raw.githubusercontent.com/moby/profiles/main/seccomp/default.json
 podman=https://raw.githubusercontent.com/containers/common/main/pkg/seccomp/seccomp.json
-diff <(curl -sSfL $docker | seccat -A -a amd64 -c docker -k 6.8) \
-     <(curl -sSfL $podman | seccat -A -a amd64 -c podman -k 6.8)
+diff <(curl -sSfL $docker | seccat -A -a $(uname -m) -c docker -k $(uname -r)) \
+     <(curl -sSfL $podman | seccat -A -a $(uname -m) -c podman -k $(uname -r))
 ```
 
 A few of the 182 lines that differ:
