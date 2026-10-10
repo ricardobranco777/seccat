@@ -266,6 +266,7 @@ type argKey struct {
 // on s390, where the argument order differs.
 var argTables = map[argKey]*symTable{
 	{"socket", 0}:      afTable,
+	{"socketpair", 0}:  afTable,
 	{"socket", 2}:      netlinkTable,
 	{"personality", 0}: personaTable,
 	{"clone", 0}:       cloneTable,
