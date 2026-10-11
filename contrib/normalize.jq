@@ -4,7 +4,8 @@
 # with diff: a header line, then one compact line per syscall name per entry.
 # Keys are sorted (use -S), empty fields are dropped, lists that are sets are
 # sorted, and a name listed in an entry becomes one line, so entry order and
-# grouping no longer matter. Sort the output.
+# grouping no longer matter. Sort the output. The order of one syscall's rules
+# is lost too, and it can change what a profile does when rules overlap.
 #
 #   norm() { jq -S -c -f contrib/normalize.jq "$@" | sort; }
 #   diff <(norm in.json) <(seccat in.json | seccat -j | norm)

@@ -100,7 +100,9 @@ diff <(norm docker.json) <(seccat docker.json | seccat -j | norm)
 ```
 
 The filter turns each entry into one line per syscall name, drops empty fields
-and sorts the sets, so entry order and grouping don't count. It also works on any
+and sorts the sets, so entry order and grouping don't count. That also hides a change
+in the order of one syscall's rules, which can change the filter (see the entry on
+argument conditions); `go test` checks that order. It also works on any
 two profiles: `diff <(norm a.json) <(norm b.json)`.
 
 ## How is seccat tested?
@@ -227,12 +229,46 @@ and crun read, using the container's capabilities, the host architecture and the
 host kernel. `--caps`, `--arch` and `--kernel` follow that step. Not modeled:
 
 - When several remaining rules match one call, libseccomp decides which action wins.
+  seccat keeps their order, which it can depend on; it doesn't predict the result.
 - runc returns `ENOSYS`, instead of the default action, for syscalls numbered above
   the largest one any rule of the profile names, for each architecture. It does not
   when the default action is `ALLOW`, `LOG` or `TRACE`, or when the profile's default
   errno is already `ENOSYS`. crun does not do this.
 - libseccomp skips syscall names it doesn't know for the target architecture.
-- Argument conditions are shown, not evaluated.
+- Argument conditions are shown, not evaluated. See the next entry for how they can
+  surprise you.
+
+## What should I watch for in argument conditions?
+
+Three things bit real profiles. The tests were done with libseccomp, loaded with
+`setpriv` as in [tools/README.md](tools/README.md), not with a container runtime.
+
+- **Seccomp compares 64 bits, the kernel reads 32.** A syscall parameter declared `int`
+  or `unsigned int`, such as every argument of `socket` and the argument of `personality`,
+  uses only the low 32 bits of the register. `socket(0x100000028, SOCK_STREAM, 0)` is not
+  equal to 40 for the filter, but the kernel opens an `AF_VSOCK` socket. So:
+  - an allow with `==`, `<` or `<=` is safe: a value with high bits set doesn't match and
+    gets the default action;
+  - a deny with `==`, an allow with `!=`, `>` or `>=`, and any deny with an inequality, can
+    be stepped around. Mask the low half instead: `arg0&0xffffffff==40`
+    (`SCMP_CMP_MASKED_EQ`, mask in `value`, datum in `valueTwo`).
+  - Podman's default profile had this for the `AF_VSOCK` and `NETLINK_AUDIT` denials:
+    [container-libs#1248](https://github.com/podman-container-tools/container-libs/issues/1248).
+    Docker's has only allowlists and `clone`'s mask, which are not affected.
+- **Overlapping rules can depend on their order in the profile.** With
+  `ERRNO arg0&0xffffffff==40` listed before a broader `ALLOW arg0!=40`, the deny wins; listed
+  after, `socket(0x100000028, ...)` was allowed in the test. Other overlaps I tried
+  (`>`, `>=`, an unconditional rule) did not depend on it, but I don't know the full rule.
+  seccat keeps the order of a syscall's rules in its text output and in `--json`, and sorts
+  only by syscall name. Older versions sorted whole lines, so the text of such a profile
+  could compile to a different filter than the JSON it came from.
+- **An unconditional rule next to conditional ones of another action** makes libseccomp drop
+  or ignore the conditional ones, depending on which came first. A draft hardened profile
+  had `socketpair` fail for every family, `AF_UNIX` included, that way.
+
+Two limits of masks: libseccomp accepts one comparison per argument in a rule, so "masked
+and not equal" can't be one rule, and `socketcall` (x86 and some other architectures) takes
+the family through a pointer, which no argument rule can see.
 
 ## Does it run on macOS or Windows?
 

@@ -100,18 +100,25 @@ In comments and listener settings: `\\`, `\t`, `\n`.
 
 ### Ordering
 
-Header lines keep their order. Rule lines are sorted as whole lines with digit
-runs compared by value, so `arg0==8` comes before `arg0==10`.
+Header lines keep their order. Rule lines are sorted by syscall name, with digit
+runs compared by value, so `dup2` comes before `dup10`. The rules of one syscall
+keep the order they have in the profile, and that order matters: when rules
+overlap, libseccomp can apply a different one depending on it. For example,
+`ERRNO(EPERM) arg0&0xffffffff==40` listed before `ALLOW arg0!=40` denies
+`socket(0x100000028, ...)`; listed after it, the call is allowed. A text file
+is read in line order, so reordering the lines of a syscall can change what the
+profile does.
 
 ## Converting back (`--json`)
 
 Lines with the same action, conditions and comment become one entry with a
-sorted `names` list; entries are ordered by first name. A line repeated in the
-text becomes a repeated entry, never merged (an older Podman profile had one
-such duplicate).
+sorted `names` list; entries are ordered by first name. Rules are merged and
+entries ordered only as far as the order of each syscall's rules allows, so the
+rules of a syscall stay in line order. A line repeated in the text becomes a
+repeated entry, never merged (an older Podman profile had one such duplicate).
 
-Behavior is preserved; the file is not. Not preserved: entry order and grouping,
-formatting, unknown fields, `null` vs absent, `valueTwo` on non-masked args, and
+Behavior is preserved; the file is not. Not preserved: the order of entries that
+share no syscall, grouping, formatting, unknown fields, `null` vs absent, `valueTwo` on non-masked args, and
 Podman's `errno` / `defaultErrno` strings.
 
 Podman's `errno` and `defaultErrno` names are read as numbers (in Podman a name

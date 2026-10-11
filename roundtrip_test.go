@@ -78,6 +78,20 @@ func ruleFacts(p *Profile, keep func(*Entry) bool, conds bool) map[string]int {
 	return facts
 }
 
+// orderFacts lists, for each syscall name, its entry facts in profile order.
+// libseccomp can answer differently for the same call depending on the order of
+// a syscall's rules, so unlike the counts above, this order has to survive.
+func orderFacts(p *Profile) map[string][]string {
+	out := map[string][]string{}
+	for i := range p.Syscalls {
+		e := &p.Syscalls[i]
+		for _, name := range e.AllNames() {
+			out[name] = append(out[name], entryFact(name, e, true))
+		}
+	}
+	return out
+}
+
 // headerFact covers everything outside syscalls[]. Order is kept where the
 // format keeps it (archMap, flags).
 func headerFact(p *Profile) string {
@@ -151,6 +165,15 @@ func sameBehavior(a, b *Profile, max int) []string {
 	if full() {
 		return problems
 	}
+	oa, ob := orderFacts(a), orderFacts(b)
+	for name, facts := range oa {
+		if !slices.Equal(facts, ob[name]) {
+			problems = append(problems, "order of the rules of "+name+" differs")
+			if full() {
+				return problems
+			}
+		}
+	}
 	for _, preset := range []string{"docker", "podman", "none", "all", "docker,SYS_ADMIN"} {
 		caps, _ := parseCaps(preset)
 		for _, arch := range []string{"amd64", "arm64", "s390x", "x86"} {
@@ -192,6 +215,15 @@ func TestSameBehaviorDetectsChanges(t *testing.T) {
 		"changed errno":   func(p *Profile) { n := uint(99); p.Syscalls[0].ErrnoRet = &n },
 		"added cap":       func(p *Profile) { p.Syscalls[0].Includes = &Filter{Caps: []string{"CAP_SYS_ADMIN"}} },
 		"changed comment": func(p *Profile) { p.Syscalls[0].Comment = "x" },
+		"swapped rules of one syscall": func(p *Profile) {
+			var idx []int
+			for i := range p.Syscalls {
+				if slices.Contains(p.Syscalls[i].AllNames(), "socket") {
+					idx = append(idx, i)
+				}
+			}
+			p.Syscalls[idx[0]], p.Syscalls[idx[1]] = p.Syscalls[idx[1]], p.Syscalls[idx[0]]
+		},
 		"changed arg": func(p *Profile) {
 			for i := range p.Syscalls {
 				if len(p.Syscalls[i].Args) > 0 {

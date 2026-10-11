@@ -40,13 +40,14 @@ func (d *Doc) writeText(w io.Writer, numeric bool) error {
 	if d.ListenerMetadata != "" {
 		fmt.Fprintf(&bw, "@listenerMetadata\t%s\n", escape(d.ListenerMetadata))
 	}
-	lines := make([]string, len(d.Rules))
-	for i := range d.Rules {
-		lines[i] = d.Rules[i].text(numeric)
-	}
-	slices.SortFunc(lines, naturalCompare)
-	for _, l := range lines {
-		bw.WriteString(l)
+	// Sorted by syscall name only. The rules of one syscall keep their order:
+	// libseccomp can pick a different action for the same call depending on it.
+	rules := slices.Clone(d.Rules)
+	slices.SortStableFunc(rules, func(a, b Rule) int {
+		return naturalCompare(a.Name+"\t", b.Name+"\t")
+	})
+	for i := range rules {
+		bw.WriteString(rules[i].text(numeric))
 		bw.WriteByte('\n')
 	}
 	_, err := io.WriteString(w, bw.String())

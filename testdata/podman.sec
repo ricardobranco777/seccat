@@ -20,9 +20,9 @@ arm_fadvise64_64	ALLOW	arch:arm,arm64
 arm_sync_file_range	ALLOW	arch:arm,arm64
 bdflush	ERRNO(EPERM)
 bind	ALLOW
-bpf	ALLOW	cap:BPF
 bpf	ALLOW	cap:SYS_ADMIN
 bpf	ERRNO(EPERM)	!cap:BPF && !cap:SYS_ADMIN
+bpf	ALLOW	cap:BPF
 breakpoint	ALLOW	arch:arm,arm64
 brk	ALLOW
 cacheflush	ALLOW	arch:arm,arm64
@@ -259,14 +259,14 @@ pause	ALLOW
 pciconfig_iobase	ERRNO(EPERM)
 pciconfig_read	ERRNO(EPERM)
 pciconfig_write	ERRNO(EPERM)
-perf_event_open	ALLOW	cap:PERFMON
 perf_event_open	ALLOW	cap:SYS_ADMIN
 perf_event_open	ERRNO(EPERM)	!cap:PERFMON && !cap:SYS_ADMIN
-personality	ALLOW	arg0==0xffffffff
+perf_event_open	ALLOW	cap:PERFMON
 personality	ALLOW	arg0==PER_LINUX
 personality	ALLOW	arg0==PER_LINUX32
-personality	ALLOW	arg0==PER_LINUX32|UNAME26
 personality	ALLOW	arg0==UNAME26
+personality	ALLOW	arg0==PER_LINUX32|UNAME26
+personality	ALLOW	arg0==0xffffffff
 pidfd_getfd	ALLOW
 pidfd_open	ALLOW
 pidfd_send_signal	ALLOW
@@ -411,11 +411,11 @@ signalfd	ALLOW
 signalfd4	ALLOW
 sigprocmask	ALLOW
 sigreturn	ALLOW
+socket	ERRNO(EPERM)	arg0==AF_VSOCK
+socket	ERRNO(EINVAL)	arg0==AF_NETLINK && arg2==NETLINK_AUDIT && !cap:AUDIT_WRITE
+socket	ALLOW	arg0==AF_NETLINK && arg2!=NETLINK_AUDIT && !cap:AUDIT_WRITE
 socket	ALLOW	arg0!=AF_NETLINK && !cap:AUDIT_WRITE
 socket	ALLOW	arg0!=AF_VSOCK && cap:AUDIT_WRITE
-socket	ALLOW	arg0==AF_NETLINK && arg2!=NETLINK_AUDIT && !cap:AUDIT_WRITE
-socket	ERRNO(EINVAL)	arg0==AF_NETLINK && arg2==NETLINK_AUDIT && !cap:AUDIT_WRITE
-socket	ERRNO(EPERM)	arg0==AF_VSOCK
 socketcall	ALLOW
 socketpair	ALLOW
 splice	ALLOW
@@ -434,8 +434,8 @@ symlink	ALLOW
 symlinkat	ALLOW
 sync	ALLOW
 sync_file_range	ALLOW
-sync_file_range2	ALLOW	arch:arm,arm64
 sync_file_range2	ALLOW	arch:ppc64le
+sync_file_range2	ALLOW	arch:arm,arm64
 syncfs	ALLOW
 syscall	ERRNO(EPERM)
 sysfs	ERRNO(EPERM)

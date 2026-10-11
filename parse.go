@@ -306,39 +306,82 @@ func (d *Doc) Profile() *Profile {
 		p.ArchMap = append(p.ArchMap, ArchEntry{archToJSON(a.Arch), archesToJSON(a.Subs)})
 	}
 
-	type group struct {
-		rule   Rule
-		layers [][]string // layers[i] holds the i-th occurrence of each name
-		seen   map[string]int
+	for _, e := range orderEntries(d.Rules) {
+		out := e.rule.entry()
+		out.Names = sortedCopy(e.names)
+		p.Syscalls = append(p.Syscalls, out)
 	}
-	groups := map[string]*group{}
-	var order []*group
-	for _, r := range d.Rules {
-		k := r.key()
-		g := groups[k]
-		if g == nil {
-			g = &group{rule: r, seen: map[string]int{}}
-			groups[k] = g
-			order = append(order, g)
-		}
-		layer := g.seen[r.Name]
-		g.seen[r.Name]++
-		if layer == len(g.layers) {
-			g.layers = append(g.layers, nil)
-		}
-		g.layers[layer] = append(g.layers[layer], r.Name)
-	}
-	for _, g := range order {
-		for _, names := range g.layers {
-			e := g.rule.entry()
-			e.Names = sortedCopy(names)
-			p.Syscalls = append(p.Syscalls, e)
-		}
-	}
-	slices.SortStableFunc(p.Syscalls, func(a, b Entry) int {
-		return strings.Compare(a.Names[0], b.Names[0])
-	})
 	return p
+}
+
+// outEntry is a JSON entry being built: the rule it comes from and its names.
+type outEntry struct {
+	rule  Rule
+	key   string
+	names []string
+}
+
+// orderEntries groups rules that differ only in name into entries, and orders
+// the entries by first name. The rules of one syscall keep their order, since
+// libseccomp can answer differently depending on it: a rule joins an earlier
+// entry with its key only if no later entry already has the same name, and two
+// entries that share a name are never swapped.
+func orderEntries(rules []Rule) []*outEntry {
+	var entries []*outEntry
+	last := map[string]int{} // name -> index of the last entry that has it
+	for _, r := range rules {
+		k := r.key()
+		target := -1
+		for i, e := range entries {
+			if e.key != k || slices.Contains(e.names, r.Name) {
+				continue
+			}
+			if l, ok := last[r.Name]; ok && l > i {
+				continue
+			}
+			target = i
+			break
+		}
+		if target < 0 {
+			entries = append(entries, &outEntry{rule: r, key: k})
+			target = len(entries) - 1
+		}
+		entries[target].names = append(entries[target].names, r.Name)
+		last[r.Name] = target
+	}
+	// Repeatedly take the entry with the smallest first name among those that
+	// have no earlier, unplaced entry with a name in common.
+	var ordered []*outEntry
+	done := make([]bool, len(entries))
+	for range entries {
+		best := -1
+		for i, e := range entries {
+			if done[i] || sharesWithPending(entries[:i], done, e.names) {
+				continue
+			}
+			if best < 0 || slices.Min(e.names) < slices.Min(entries[best].names) {
+				best = i
+			}
+		}
+		done[best] = true
+		ordered = append(ordered, entries[best])
+	}
+	return ordered
+}
+
+// sharesWithPending reports whether a not yet placed entry among before has one of names.
+func sharesWithPending(before []*outEntry, done []bool, names []string) bool {
+	for i, b := range before {
+		if done[i] {
+			continue
+		}
+		for _, n := range b.names {
+			if slices.Contains(names, n) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // key identifies everything but the name.

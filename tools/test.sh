@@ -144,6 +144,12 @@ probes docker docker "socket 40 1" ERRNO\(EPERM\) "socket 2 1" ALLOW \
 	"personality 8" ALLOW "personality 5" ERRNO\(EPERM\)
 probes docker docker,SYS_ADMIN "clone 0x10000000" ALLOW
 
+# The order of a syscall's rules decides which one libseccomp applies when they
+# overlap: socket(0x100000028) is AF_VSOCK to the kernel (the filter compares
+# 64 bits), and matches both rules. seccat has to keep the order.
+probes order-deny-first none "socket 0x100000028 1" ERRNO\(EPERM\) "socket 40 1" ERRNO\(EPERM\) "socket 2 1" ERRNO\(EACCES\)
+probes order-allow-first none "socket 0x100000028 1" ERRNO\(EACCES\) "socket 40 1" ERRNO\(EPERM\) "socket 2 1" ERRNO\(EACCES\)
+
 # Control: a filter checked against the wrong profile must be caught.
 compile ../testdata/docker.json docker
 want ../testdata/podman.json docker

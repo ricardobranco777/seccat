@@ -20,8 +20,8 @@ arch_prctl	ALLOW	arch:amd64,x32
 arm_fadvise64_64	ALLOW	arch:arm,arm64
 arm_sync_file_range	ALLOW	arch:arm,arm64
 bind	ALLOW
-bpf	ALLOW	cap:BPF
 bpf	ALLOW	cap:SYS_ADMIN
+bpf	ALLOW	cap:BPF
 breakpoint	ALLOW	arch:arm,arm64
 brk	ALLOW
 cacheflush	ALLOW	arch:arm,arm64
@@ -43,9 +43,9 @@ clock_nanosleep	ALLOW
 clock_nanosleep_time64	ALLOW
 clock_settime	ALLOW	cap:SYS_TIME
 clock_settime64	ALLOW	cap:SYS_TIME
+clone	ALLOW	cap:SYS_ADMIN
 clone	ALLOW	arg0&(CLONE_NEWNS|CLONE_NEWCGROUP|CLONE_NEWUTS|CLONE_NEWIPC|CLONE_NEWUSER|CLONE_NEWPID|CLONE_NEWNET)==0 && !cap:SYS_ADMIN && !arch:s390,s390x
 clone	ALLOW	arg1&(CLONE_NEWNS|CLONE_NEWCGROUP|CLONE_NEWUTS|CLONE_NEWIPC|CLONE_NEWUSER|CLONE_NEWPID|CLONE_NEWNET)==0 && !cap:SYS_ADMIN && arch:s390,s390x	# s390 parameter ordering for clone is different
-clone	ALLOW	cap:SYS_ADMIN
 clone3	ALLOW	cap:SYS_ADMIN
 clone3	ERRNO(ENOSYS)	!cap:SYS_ADMIN
 close	ALLOW
@@ -242,13 +242,13 @@ open_tree	ALLOW	cap:SYS_ADMIN
 openat	ALLOW
 openat2	ALLOW
 pause	ALLOW
-perf_event_open	ALLOW	cap:PERFMON
 perf_event_open	ALLOW	cap:SYS_ADMIN
-personality	ALLOW	arg0==0xffffffff
+perf_event_open	ALLOW	cap:PERFMON
 personality	ALLOW	arg0==PER_LINUX
 personality	ALLOW	arg0==PER_LINUX32
-personality	ALLOW	arg0==PER_LINUX32|UNAME26
 personality	ALLOW	arg0==UNAME26
+personality	ALLOW	arg0==PER_LINUX32|UNAME26
+personality	ALLOW	arg0==0xffffffff
 pidfd_getfd	ALLOW	cap:SYS_PTRACE
 pidfd_open	ALLOW
 pidfd_send_signal	ALLOW
@@ -267,14 +267,14 @@ preadv2	ALLOW
 prlimit64	ALLOW
 process_madvise	ALLOW	cap:SYS_PTRACE
 process_mrelease	ALLOW
-process_vm_readv	ALLOW	cap:SYS_PTRACE
 process_vm_readv	ALLOW	kernel>=4.8
-process_vm_writev	ALLOW	cap:SYS_PTRACE
+process_vm_readv	ALLOW	cap:SYS_PTRACE
 process_vm_writev	ALLOW	kernel>=4.8
+process_vm_writev	ALLOW	cap:SYS_PTRACE
 pselect6	ALLOW
 pselect6_time64	ALLOW
-ptrace	ALLOW	cap:SYS_PTRACE
 ptrace	ALLOW	kernel>=4.8
+ptrace	ALLOW	cap:SYS_PTRACE
 pwrite64	ALLOW
 pwritev	ALLOW
 pwritev2	ALLOW
@@ -387,35 +387,35 @@ signalfd4	ALLOW
 sigprocmask	ALLOW
 sigreturn	ALLOW
 socket	ALLOW	arg0<3
-socket	ALLOW	arg0==AF_ASH
-socket	ALLOW	arg0==AF_ATMPVC
-socket	ALLOW	arg0==AF_BLUETOOTH
 socket	ALLOW	arg0==AF_BRIDGE
-socket	ALLOW	arg0==AF_CAN
-socket	ALLOW	arg0==AF_IB
-socket	ALLOW	arg0==AF_IEEE802154
-socket	ALLOW	arg0==AF_INET6
-socket	ALLOW	arg0==AF_IUCV
-socket	ALLOW	arg0==AF_KCM
-socket	ALLOW	arg0==AF_KEY
-socket	ALLOW	arg0==AF_LLC
-socket	ALLOW	arg0==AF_MCTP
-socket	ALLOW	arg0==AF_MPLS
-socket	ALLOW	arg0==AF_NETBEUI
-socket	ALLOW	arg0==AF_NETLINK
-socket	ALLOW	arg0==AF_NFC
-socket	ALLOW	arg0==AF_PACKET
-socket	ALLOW	arg0==AF_PHONET
-socket	ALLOW	arg0==AF_PPPOX
-socket	ALLOW	arg0==AF_QIPCRTR
-socket	ALLOW	arg0==AF_RDS
-socket	ALLOW	arg0==AF_RXRPC
-socket	ALLOW	arg0==AF_SECURITY
-socket	ALLOW	arg0==AF_SMC
-socket	ALLOW	arg0==AF_SNA
-socket	ALLOW	arg0==AF_TIPC
+socket	ALLOW	arg0==AF_ATMPVC
 socket	ALLOW	arg0==AF_X25
+socket	ALLOW	arg0==AF_INET6
+socket	ALLOW	arg0==AF_NETBEUI
+socket	ALLOW	arg0==AF_SECURITY
+socket	ALLOW	arg0==AF_KEY
+socket	ALLOW	arg0==AF_NETLINK
+socket	ALLOW	arg0==AF_PACKET
+socket	ALLOW	arg0==AF_ASH
+socket	ALLOW	arg0==AF_RDS
+socket	ALLOW	arg0==AF_SNA
+socket	ALLOW	arg0==AF_PPPOX
+socket	ALLOW	arg0==AF_LLC
+socket	ALLOW	arg0==AF_IB
+socket	ALLOW	arg0==AF_MPLS
+socket	ALLOW	arg0==AF_CAN
+socket	ALLOW	arg0==AF_TIPC
+socket	ALLOW	arg0==AF_BLUETOOTH
+socket	ALLOW	arg0==AF_IUCV
+socket	ALLOW	arg0==AF_RXRPC
+socket	ALLOW	arg0==AF_PHONET
+socket	ALLOW	arg0==AF_IEEE802154
+socket	ALLOW	arg0==AF_NFC
+socket	ALLOW	arg0==AF_KCM
+socket	ALLOW	arg0==AF_QIPCRTR
+socket	ALLOW	arg0==AF_SMC
 socket	ALLOW	arg0==AF_XDP
+socket	ALLOW	arg0==AF_MCTP
 socketcall	ALLOW
 socketpair	ALLOW
 splice	ALLOW
@@ -431,12 +431,12 @@ symlink	ALLOW
 symlinkat	ALLOW
 sync	ALLOW
 sync_file_range	ALLOW
-sync_file_range2	ALLOW	arch:arm,arm64
 sync_file_range2	ALLOW	arch:ppc64le
+sync_file_range2	ALLOW	arch:arm,arm64
 syncfs	ALLOW
 sysinfo	ALLOW
-syslog	ALLOW	cap:SYSLOG
 syslog	ALLOW	cap:SYS_ADMIN
+syslog	ALLOW	cap:SYSLOG
 tee	ALLOW
 tgkill	ALLOW
 time	ALLOW
