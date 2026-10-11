@@ -8,13 +8,26 @@ VERSION := $(shell git describe --tags --dirty --always 2>/dev/null || echo dev)
 export VERSION
 LDFLAGS = -X main.version=$$VERSION
 
+ifeq ($(shell id -u),0)
+PREFIX ?= /usr/local
+else
+PREFIX ?= $(HOME)/.local
+endif
+BINDIR ?= $(PREFIX)/bin
+
 # Linux architectures in the release binaries.
 RELEASE_ARCHES = amd64 arm64
 
-.PHONY: build test tools check-tools test-tools fix check update-golden update-syscalls release version
+.PHONY: build test tools check-tools test-tools fix check update-golden update-syscalls release version install uninstall
 
 build:
 	go build -ldflags "$(LDFLAGS)" -o seccat .
+
+install: build
+	install -D -m 0755 seccat "$(DESTDIR)$(BINDIR)/seccat"
+
+uninstall:
+	$(RM) "$(DESTDIR)$(BINDIR)/seccat"
 
 test:
 	go test -race ./...
