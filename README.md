@@ -2,10 +2,8 @@
 
 [![CI](https://github.com/ricardobranco777/seccat/actions/workflows/ci.yml/badge.svg)](https://github.com/ricardobranco777/seccat/actions/workflows/ci.yml)
 
-seccat defines a line-oriented intermediate language for seccomp profile JSON.
-In this form, the profiles of container runtimes such as Docker and Podman can be
-studied and compared with standard text tools such as `grep` and `diff`, and
-edited and converted back into JSON that behaves the same.
+seccomp translates seccomp profiles in JSON to a line-oriented DSL that you can
+`grep`, `diff` and edit to convert back into JSON that is functionally the same.
 
 A seccomp profile is JSON, and what it allows depends on the container. Some
 rules apply only with a capability such as `CAP_SYS_ADMIN`, or on one
