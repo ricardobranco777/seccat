@@ -119,6 +119,8 @@ Related projects:
   generates a profile from the syscalls a container makes.
 - [seccomp-tools](https://github.com/david942j/seccomp-tools): dumps, disassembles
   and emulates compiled BPF filters.
+- [Kafel](https://google.github.io/kafel/): a language for writing seccomp-bpf
+  policies as text, compiled to BPF.
 
 ## More
 
