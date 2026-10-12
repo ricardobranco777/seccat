@@ -127,6 +127,16 @@ Related projects:
 - [FAQ.md](FAQ.md): worked examples, how conversion and testing work, limits.
 - [FORMAT.md](FORMAT.md): the text format.
 
+## Upstream issues
+
+Issues opened while developing seccat:
+
+- [containerd/containerd#14348](https://github.com/containerd/containerd/issues/14348)
+- [podman-container-tools/container-libs#1248](https://github.com/podman-container-tools/container-libs/issues/1248)
+- [qemu-project/qemu#4671](https://gitlab.com/qemu-project/qemu/-/work_items/4671)
+- [systemd/systemd#44134](https://github.com/systemd/systemd/issues/44134)
+- [systemd/systemd#44148](https://github.com/systemd/systemd/issues/44148)
+
 ## License
 
 BSD-2-Clause. The syscall table in `third_party/libseccomp` is libseccomp's,
