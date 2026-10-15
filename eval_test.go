@@ -82,8 +82,8 @@ func TestEval(t *testing.T) {
 		{"socket podman none", "podman", "socket",
 			func(t *testing.T) Context { return Context{Caps: mustCaps(t, "none")} },
 			[]string{
-				"socket\tERRNO(EPERM)\targ0==AF_VSOCK",
-				"socket\tERRNO(EINVAL)\targ0==AF_NETLINK && arg2==NETLINK_AUDIT",
+				"socket\tERRNO(EPERM)\targ0&0xffffffff==AF_VSOCK",
+				"socket\tERRNO(EINVAL)\targ0&0xffffffff==AF_NETLINK && arg2&0xffffffff==9",
 				"socket\tALLOW\targ0==AF_NETLINK && arg2!=NETLINK_AUDIT",
 				"socket\tALLOW\targ0!=AF_NETLINK",
 			}},
