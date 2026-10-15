@@ -411,8 +411,8 @@ signalfd	ALLOW
 signalfd4	ALLOW
 sigprocmask	ALLOW
 sigreturn	ALLOW
-socket	ERRNO(EPERM)	arg0==AF_VSOCK
-socket	ERRNO(EINVAL)	arg0==AF_NETLINK && arg2==NETLINK_AUDIT && !cap:AUDIT_WRITE
+socket	ERRNO(EPERM)	arg0&0xffffffff==AF_VSOCK
+socket	ERRNO(EINVAL)	arg0&0xffffffff==AF_NETLINK && arg2&0xffffffff==9 && !cap:AUDIT_WRITE
 socket	ALLOW	arg0==AF_NETLINK && arg2!=NETLINK_AUDIT && !cap:AUDIT_WRITE
 socket	ALLOW	arg0!=AF_NETLINK && !cap:AUDIT_WRITE
 socket	ALLOW	arg0!=AF_VSOCK && cap:AUDIT_WRITE
