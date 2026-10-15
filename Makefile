@@ -18,7 +18,7 @@ BINDIR ?= $(PREFIX)/bin
 # Linux architectures in the release binaries.
 RELEASE_ARCHES = amd64 arm64
 
-.PHONY: build test tools check-tools test-tools fix check update-golden update-syscalls release version install uninstall
+.PHONY: build test tools check-tools test-tools fix check update-golden update-syscalls update-profiles release version install uninstall
 
 build:
 	go build -ldflags "$(LDFLAGS)" -o seccat .
@@ -62,6 +62,13 @@ update-syscalls:
 	curl -sSfL -o third_party/libseccomp/syscalls.csv \
 		https://raw.githubusercontent.com/seccomp/libseccomp/main/src/syscalls.csv
 	@echo "now update the commit and date in third_party/libseccomp/README"
+
+update-profiles:
+	curl -sSfL -o testdata/docker.json \
+		https://raw.githubusercontent.com/moby/profiles/main/seccomp/default.json
+	curl -sSfL -o testdata/podman.json \
+		https://raw.githubusercontent.com/podman-container-tools/container-libs/main/common/pkg/seccomp/seccomp.json
+	@echo "now update the date in testdata/README, then run make update-golden"
 
 # release writes one binary per architecture and a SHA256SUMS file to dist/. The
 # names carry no version, so that .../releases/latest/download/seccat-linux-amd64
