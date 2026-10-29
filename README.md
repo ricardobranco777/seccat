@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/ricardobranco777/seccat/actions/workflows/ci.yml/badge.svg)](https://github.com/ricardobranco777/seccat/actions/workflows/ci.yml)
 
-seccomp translates seccomp profiles in JSON to a line-oriented DSL that you can
+seccat translates seccomp profiles in JSON to a line-oriented DSL that you can
 `grep`, `diff` and edit to convert back into JSON that is functionally the same.
 
 A seccomp profile is JSON, and what it allows depends on the container. Some
